@@ -1,6 +1,7 @@
 const esbuild = require("esbuild");
 const { config } = require("dotenv");
 const fs = require("fs-extra");
+const csvLoader = require("./plugins/csvLoader");
 
 const runBuild = async () => {
   config();
@@ -35,6 +36,7 @@ const buildClientBundle = async (clientEnv) => {
     minify: true,
     define: clientEnv,
     loader: { ".png": "file", ".svg": "file" },
+    plugins: [csvLoader],
     outfile: "dist/bundle.js",
   });
 };

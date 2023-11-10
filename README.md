@@ -48,7 +48,3 @@ After setting up the project, you can start visualizing YouTuber data by running
 - [React](https://reactjs.org/)
 - [esbuild](https://esbuild.github.io/)
 - [Kaggle](https://www.kaggle.com/)
-
-```
-
-```

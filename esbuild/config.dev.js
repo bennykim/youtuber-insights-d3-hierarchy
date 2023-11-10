@@ -4,6 +4,7 @@ const { createServer, request } = require("http");
 const { config } = require("dotenv");
 const serveHandler = require("serve-handler");
 const fs = require("fs-extra");
+const csvLoader = require("./plugins/csvLoader");
 
 const clients = [];
 
@@ -51,6 +52,7 @@ const getBuildOptions = (clientEnv) => ({
   define: clientEnv,
   outfile: "dist/bundle.js",
   loader: { ".png": "file", ".svg": "file" },
+  plugins: [csvLoader],
   sourcemap: "inline",
   watch: {
     onRebuild: handleRebuild,
