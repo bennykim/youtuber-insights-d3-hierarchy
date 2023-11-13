@@ -1,15 +1,16 @@
-import { useEffect } from "react";
 import useHMR from "./hooks/useHMR";
-import file from "./data/youtubers.csv";
+import youtuberStatistics from "./data/youtuber_statistics.csv";
+import TreeMapContainer from "./components/TreeMap/TreeMapContainer";
 
 const App = () => {
   useHMR();
 
-  useEffect(() => {
-    console.log(file);
-  }, []);
-
-  return <h1>Youtuber insights D3 hierarchy</h1>;
+  return (
+    <main>
+      <h1>Youtuber insights D3 hierarchy</h1>
+      <TreeMapContainer data={youtuberStatistics} />
+    </main>
+  );
 };
 
 export default App;
