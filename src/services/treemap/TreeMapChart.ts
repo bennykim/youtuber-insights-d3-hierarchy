@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import * as DOM from "../../utils/dom";
+import * as DOM from "@/utils/dom";
 
 export class TreeMapChart {
   id: string;

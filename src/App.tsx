@@ -1,6 +1,6 @@
-import useHMR from "./hooks/useHMR";
-import youtuberStatistics from "./data/youtuber_statistics.csv";
-import TreeMapContainer from "./components/TreeMap/TreeMapContainer";
+import useHMR from "@/hooks/useHMR";
+import youtuberStatistics from "@/data/youtuber_statistics.csv";
+import TreeMapContainer from "@/components/treemap/TreeMapContainer";
 
 const App = () => {
   useHMR();
