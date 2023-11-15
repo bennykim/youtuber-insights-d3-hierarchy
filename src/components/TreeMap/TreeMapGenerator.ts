@@ -1,18 +1,21 @@
 import * as d3 from "d3";
 import * as DOM from "../../utils/dom";
 
-interface Datum {}
-
 export class TreeMapChart {
   id: string;
-  data: Datum;
+  data: CategorizedData;
   width: number;
   height: number;
   color: d3.ScaleSequential<string>;
   format: (n: number | { valueOf(): number }) => string;
   shadowId: DOM.Id;
 
-  constructor(id: string, data: Datum, width: number, height: number) {
+  constructor(
+    id: string,
+    data: CategorizedData,
+    width: number,
+    height: number
+  ) {
     this.id = id;
     this.data = data;
     this.width = width;

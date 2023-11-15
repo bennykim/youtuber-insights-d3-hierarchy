@@ -1,9 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import { TreeMapChart } from "./TreeMapGenerator";
 import { TREE_MAP_ID } from "./constants";
+import {
+  normalizeYoutubersData,
+  formatToGroupedNodes,
+} from "../../utils/format";
 
 type TreeMapContainerProps = {
-  data: any;
+  data: Youtubers;
 };
 
 const TreeMapContainer: React.FC<TreeMapContainerProps> = ({ data }) => {
@@ -11,7 +15,14 @@ const TreeMapContainer: React.FC<TreeMapContainerProps> = ({ data }) => {
 
   useEffect(() => {
     if (!treeMapRef.current) {
-      treeMapRef.current = new TreeMapChart(TREE_MAP_ID, data, 750, 500);
+      const youtubersProfile = normalizeYoutubersData(data);
+      const categorizedData = formatToGroupedNodes(youtubersProfile);
+      treeMapRef.current = new TreeMapChart(
+        TREE_MAP_ID,
+        categorizedData,
+        750,
+        500
+      );
     }
     treeMapRef.current.render();
   }, [data]);
