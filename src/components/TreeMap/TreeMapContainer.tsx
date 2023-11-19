@@ -3,21 +3,29 @@ import { TreeMapData, TreeMapChart } from "@/services/treemap";
 import { TREE_MAP_ID } from "@/components/treemap/constants";
 
 type TreeMapContainerProps = {
-  data: Youtubers;
+  title: string;
+  data: Youtubers[];
+  width: number;
+  height: number;
 };
 
-const TreeMapContainer: React.FC<TreeMapContainerProps> = ({ data }) => {
+const TreeMapContainer: React.FC<TreeMapContainerProps> = ({
+  title,
+  data,
+  width,
+  height,
+}) => {
   const treeMapRef = useRef<TreeMapChart | null>(null);
 
   useEffect(() => {
     if (!treeMapRef.current) {
-      const treeMapData = new TreeMapData(data);
+      const treeMapData = new TreeMapData<Youtubers>(title, data);
       const categorizedData = treeMapData.formatToGroupedNodes();
       treeMapRef.current = new TreeMapChart(
         TREE_MAP_ID,
         categorizedData,
-        750,
-        500
+        width,
+        height
       );
     }
     treeMapRef.current.render();

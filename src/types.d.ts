@@ -13,18 +13,14 @@ type Youtubers = {
   Suscribers: string;
   Username: string;
   Visits: string;
-}[];
+};
 
-type NormalizedYoutubers = {
+interface HierarchyDatum {
   category: string;
   name: string;
   url: string;
   subs: number;
   likes: number;
   views: number;
-}[];
-
-type CategorizedData = {
-  group: string;
-  nodes: NormalizedYoutubers;
-}[];
+  children?: Array<HierarchyDatum>;
+}

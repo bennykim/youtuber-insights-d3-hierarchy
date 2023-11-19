@@ -8,7 +8,12 @@ const App = () => {
   return (
     <main>
       <h1>Youtuber insights D3 hierarchy</h1>
-      <TreeMapContainer data={youtuberStatistics} />
+      <TreeMapContainer
+        title="Top Trending YouTube Channels"
+        data={youtuberStatistics}
+        width={1024}
+        height={980}
+      />
     </main>
   );
 };
