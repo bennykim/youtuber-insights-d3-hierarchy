@@ -5,6 +5,7 @@ import { TREE_MAP_ID } from "@/components/treemap/constants";
 type TreeMapContainerProps = {
   title: string;
   data: Youtubers[];
+  size: number;
   width: number;
   height: number;
 };
@@ -12,6 +13,7 @@ type TreeMapContainerProps = {
 const TreeMapContainer: React.FC<TreeMapContainerProps> = ({
   title,
   data,
+  size,
   width,
   height,
 }) => {
@@ -19,7 +21,7 @@ const TreeMapContainer: React.FC<TreeMapContainerProps> = ({
 
   useEffect(() => {
     if (!treeMapRef.current) {
-      const treeMapData = new TreeMapData<Youtubers>(title, data);
+      const treeMapData = new TreeMapData<Youtubers>(title, size, data);
       const categorizedData = treeMapData.formatToGroupedNodes();
       treeMapRef.current = new TreeMapChart(
         TREE_MAP_ID,
@@ -29,6 +31,12 @@ const TreeMapContainer: React.FC<TreeMapContainerProps> = ({
       );
     }
     treeMapRef.current.render();
+
+    return () => {
+      if (treeMapRef.current) {
+        treeMapRef.current.clear();
+      }
+    };
   }, [data]);
 
   return <div id={TREE_MAP_ID} />;

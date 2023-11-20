@@ -11,6 +11,7 @@ const App = () => {
       <TreeMapContainer
         title="Top Trending YouTube Channels"
         data={youtuberStatistics}
+        size={200}
         width={1024}
         height={980}
       />

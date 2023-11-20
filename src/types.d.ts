@@ -4,15 +4,15 @@ declare module "*.csv" {
 }
 
 type Youtubers = {
-  Categories: string;
-  Comments: string;
-  Country: string;
-  Likes: string;
-  Links: string;
-  Rank: string;
-  Suscribers: string;
-  Username: string;
-  Visits: string;
+  categories: string;
+  comments: string;
+  country: string;
+  likes: string;
+  links: string;
+  rank: string;
+  suscribers: string;
+  username: string;
+  visits: string;
 };
 
 interface HierarchyDatum {

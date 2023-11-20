@@ -2,13 +2,12 @@ import * as d3 from "d3";
 import * as DOM from "@/utils/dom";
 
 export class TreeMapChart {
-  id: string;
-  data: HierarchyDatum;
-  width: number;
-  height: number;
-  color: d3.ScaleSequential<string>;
-  format: (n: number | { valueOf(): number }) => string;
-  shadowId: DOM.Id;
+  private id: string;
+  private data: HierarchyDatum;
+  private width: number;
+  private height: number;
+  private color: d3.ScaleSequential<string>;
+  private format: (n: number | { valueOf(): number }) => string;
 
   constructor(id: string, data: HierarchyDatum, width: number, height: number) {
     this.id = id;
@@ -17,10 +16,9 @@ export class TreeMapChart {
     this.height = height;
     this.color = d3.scaleSequential([8, 0], d3.interpolateSpectral);
     this.format = d3.format(",d");
-    this.shadowId = DOM.uid("shadow");
   }
 
-  createTreemap() {
+  private createTreemap() {
     const sortedHierarchy = d3
       .hierarchy(this.data)
       .sum((d) => d.subs)
@@ -37,7 +35,7 @@ export class TreeMapChart {
     return treemapLayout(sortedHierarchy);
   }
 
-  createSvg() {
+  private createSvg() {
     const svg = d3
       .select<SVGSVGElement, HierarchyDatum>(`#${this.id}`)
       .append("svg")
@@ -48,38 +46,38 @@ export class TreeMapChart {
     return svg;
   }
 
-  addTreeMapCells(
+  private addTreeMapCells(
     svg: d3.Selection<SVGSVGElement, HierarchyDatum, HTMLElement, any>,
     root: d3.HierarchyRectangularNode<HierarchyDatum>
   ) {
-    const node = svg
+    const groupNodes = svg
       .selectAll("g")
       .data(d3.group(root, (d) => d.height))
-      .join("g")
+      .join("g");
+
+    const node = groupNodes
       .selectAll("g")
       .data((d) => d[1])
       .join("g")
       .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
 
-    node.append("title").text(
-      (d) =>
-        `${d
-          .ancestors()
-          .reverse()
-          .map((d) => d.data.name)
-          .join(".")}\n${this.format(d.value ?? 0)}`
-    );
-
     node
       .append("rect")
-      .attr("id", DOM.uid("node").id)
+      .attr("id", (d: any) => (d.nodeUid = DOM.uid("node")).id)
       .attr("fill", (d) => this.color(d.height))
       .attr("fill-opacity", 0.6)
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0);
 
     node
+      .append("clipPath")
+      .attr("id", (d: any) => (d.clipUid = DOM.uid("clip")).id)
+      .append("use")
+      .attr("xlink:href", (d: any) => d.nodeUid.href);
+
+    node
       .append("text")
+      .attr("clip-path", (d: any) => d.clipUid)
       .selectAll("tspan")
       .data((d) => {
         return d.data.name
@@ -103,7 +101,7 @@ export class TreeMapChart {
       .attr("y", 13);
 
     node
-      .filter((d: any) => !d.children)
+      .filter((d) => !d.children)
       .selectAll("tspan")
       .attr("x", 3)
       .attr(
@@ -115,10 +113,14 @@ export class TreeMapChart {
     return node;
   }
 
-  render() {
-    const root = this.createTreemap();
-    const svg = this.createSvg();
-    this.addTreeMapCells(svg, root);
-    return svg.node();
+  public render() {
+    const treemapRoot = this.createTreemap();
+    const treemapSvg = this.createSvg();
+    const treemapCells = this.addTreeMapCells(treemapSvg, treemapRoot);
+    return treemapCells.node();
+  }
+
+  public clear() {
+    d3.select(`#${this.id}`).remove();
   }
 }

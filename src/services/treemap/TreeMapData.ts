@@ -9,20 +9,25 @@ export class TreeMapData<T extends Youtubers> {
   private title: string;
   private data: T[];
 
-  constructor(title: string, data: T[]) {
+  constructor(title: string, size: number, data: T[]) {
     this.title = title;
-    this.data = data;
+    this.data = this.trimDataToSize(data, size);
+  }
+
+  private trimDataToSize(data: T[], size: number): T[] {
+    const validSize = Math.max(0, Math.min(size, data.length));
+    return data.slice(0, validSize);
   }
 
   private normalizeData(): Array<HierarchyDatum> {
     return this.data.map(
-      ({ Categories, Username, Suscribers, Likes, Visits, Links }) => ({
-        category: Categories,
-        name: Username,
-        url: Links,
-        subs: this.parseNumber(Suscribers),
-        likes: this.parseNumber(Likes),
-        views: this.parseNumber(Visits),
+      ({ categories, username, suscribers, likes, visits, links }) => ({
+        category: categories,
+        name: username,
+        url: links,
+        subs: this.parseNumber(suscribers),
+        likes: this.parseNumber(likes),
+        views: this.parseNumber(visits),
       })
     );
   }
@@ -36,6 +41,7 @@ export class TreeMapData<T extends Youtubers> {
     data: Array<HierarchyDatum>
   ): Map<string, Array<HierarchyDatum>> {
     const categoryGroups = new Map<string, Array<HierarchyDatum>>();
+
     data.forEach((item) => {
       const category = item.category || "Others";
       if (!categoryGroups.has(category)) {
@@ -43,6 +49,7 @@ export class TreeMapData<T extends Youtubers> {
       }
       categoryGroups.get(category)?.push(item);
     });
+
     return categoryGroups;
   }
 
