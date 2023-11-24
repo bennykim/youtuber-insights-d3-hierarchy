@@ -46,11 +46,20 @@ export class TreeMapChart {
     return svg;
   }
 
+  private createContainer(
+    svg: d3.Selection<SVGSVGElement, HierarchyDatum, HTMLElement, any>
+  ) {
+    const container = svg.append("g");
+    container.attr("width", this.width).attr("height", this.height);
+
+    return container;
+  }
+
   private addTreeMapCells(
-    svg: d3.Selection<SVGSVGElement, HierarchyDatum, HTMLElement, any>,
+    container: d3.Selection<SVGGElement, HierarchyDatum, HTMLElement, any>,
     root: d3.HierarchyRectangularNode<HierarchyDatum>
   ) {
-    const groupNodes = svg
+    const groupNodes = container
       .selectAll("g")
       .data(d3.group(root, (d) => d.height))
       .join("g");
@@ -113,10 +122,28 @@ export class TreeMapChart {
     return node;
   }
 
+  private initializeZoom(
+    container: d3.Selection<SVGGElement, HierarchyDatum, HTMLElement, any>
+  ) {
+    const zoom = d3
+      .zoom<SVGSVGElement, any>()
+      .scaleExtent([1, 10])
+      .translateExtent([
+        [0, 0],
+        [this.width, this.height],
+      ])
+      .on("zoom", ({ transform }) => container.attr("transform", transform));
+
+    return zoom;
+  }
+
   public render() {
     const treemapRoot = this.createTreemap();
     const treemapSvg = this.createSvg();
-    const treemapCells = this.addTreeMapCells(treemapSvg, treemapRoot);
+    const treemapContainer = this.createContainer(treemapSvg);
+    const treemapZoom = this.initializeZoom(treemapContainer);
+    const treemapCells = this.addTreeMapCells(treemapContainer, treemapRoot);
+    treemapSvg.call(treemapZoom);
     return treemapCells.node();
   }
 
