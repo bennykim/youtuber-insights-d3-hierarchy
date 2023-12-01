@@ -1,19 +1,28 @@
 import * as d3 from "d3";
 import * as DOM from "@/utils/dom";
+import { TileType, tileFunctions } from "@/utils/d3";
 
 export class TreeMapChart {
   private id: string;
   private data: HierarchyDatum;
   private width: number;
   private height: number;
+  private tile: TileType;
   private color: d3.ScaleSequential<string>;
   private format: (n: number | { valueOf(): number }) => string;
 
-  constructor(id: string, data: HierarchyDatum, width: number, height: number) {
+  constructor(
+    id: string,
+    data: HierarchyDatum,
+    width: number,
+    height: number,
+    tile: TileType
+  ) {
     this.id = id;
     this.data = data;
     this.width = width;
     this.height = height;
+    this.tile = tile;
     this.color = d3.scaleSequential([8, 0], d3.interpolateSpectral);
     this.format = d3.format(",d");
   }
@@ -26,6 +35,7 @@ export class TreeMapChart {
 
     const treemapLayout = d3
       .treemap<HierarchyDatum>()
+      .tile(tileFunctions[this.tile])
       .size([this.width, this.height])
       .paddingOuter(3)
       .paddingTop(19)
@@ -137,7 +147,12 @@ export class TreeMapChart {
     return zoom;
   }
 
+  public clear() {
+    d3.select(`#${this.id}`).selectAll("*").remove();
+  }
+
   public render() {
+    this.clear();
     const treemapRoot = this.createTreemap();
     const treemapSvg = this.createSvg();
     const treemapContainer = this.createContainer(treemapSvg);
@@ -145,9 +160,5 @@ export class TreeMapChart {
     const treemapCells = this.addTreeMapCells(treemapContainer, treemapRoot);
     treemapSvg.call(treemapZoom);
     return treemapCells.node();
-  }
-
-  public clear() {
-    d3.select(`#${this.id}`).remove();
   }
 }
